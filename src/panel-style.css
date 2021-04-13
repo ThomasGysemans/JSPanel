@@ -63,7 +63,8 @@
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-    width: 80%;
+    display: block;
+    width: 100%;
     text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;

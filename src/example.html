@@ -41,13 +41,13 @@
             cursor: pointer;
             background-color: #fff;
             border: 1px solid #dfe3eb;
-            box-shadow: 1px 2px 3px rgba(204, 204, 204, 0.75);
+            box-shadow: 0 0 3px rgba(204, 204, 204, 0.75);
             color: #303030;
             font-size: 22px;
             transition: transform 200ms ease;
         }
 
-        #panel-controller.visible {
+        #panel-controller[aria-expanded="true"] {
             transform: rotate(45deg);
         }
     </style>

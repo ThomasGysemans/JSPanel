@@ -1,6 +1,6 @@
 "use strict";
 /**
- * @class Creates a panel that follows the digital accessibility recommendations
+ * @class Creates a panel that follows the digital accessibility recommendations.
  */
 class JSPanel {
     /**
@@ -19,9 +19,9 @@ class JSPanel {
         this.button = button;
         this.options = options;
         this.panel_uniqueid = "jspanel-" + this._rand(0, 1000000);
+        this._buildPanel();
         this.button.setAttribute("aria-expanded", "false");
         this.button.setAttribute("aria-controls", this.panel_uniqueid);
-        this._buildPanel();
     }
     /**
      * Builds the panel.
@@ -117,7 +117,7 @@ class JSPanel {
                 this._closePanel();
             }
             else {
-                this.button.setAttribute("expanded", "true");
+                this.button.setAttribute("aria-expanded", "true");
                 this.panel.classList.remove("panel-hidden");
             }
         }
@@ -128,7 +128,7 @@ class JSPanel {
      */
     _closePanel() {
         if (this.button && this.panel) {
-            this.button.setAttribute("expanded", "false");
+            this.button.setAttribute("aria-expanded", "false");
             this.panel.classList.add("panel-hidden");
         }
     }
@@ -173,6 +173,7 @@ class JSPanel {
      * Builds an item.
      * @param {{title:string,icon?:string,fontawesome_icon?:string,onclick?:Function,separator?:boolean}} item The item to build.
      * @returns {HTMLElement} The item as an HTML element.
+     * @private
      */
     _buildItem(item) {
         if (item.separator) {

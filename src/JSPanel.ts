@@ -165,7 +165,7 @@ class JSPanel {
             if (this._isOpened()) {
                 this._closePanel();
             } else {
-                this.button.setAttribute("expanded", "true");
+                this.button.setAttribute("aria-expanded", "true");
                 this.panel.classList.remove("panel-hidden");
             }
         }
@@ -177,7 +177,7 @@ class JSPanel {
      */
     private _closePanel(): void {
         if (this.button && this.panel) {
-            this.button.setAttribute("expanded", "false");
+            this.button.setAttribute("aria-expanded", "false");
             this.panel.classList.add("panel-hidden");
         }
     }
