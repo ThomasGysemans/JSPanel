@@ -28,9 +28,8 @@
 
         #container {
             position: fixed;
-            top: 30px;
+            bottom: 30px;
             right: 30px;
-            border: 1px solid red;
         }
 
         #panel-controller {
@@ -65,9 +64,8 @@
     <script>
         const button = document.querySelector("#panel-controller");
         const panel = new JSPanel(button, {
-            top: 0 + button.getBoundingClientRect().height, 
+            bottom: 0 + button.getBoundingClientRect().height,
             right: 0,
-            // reversed: false, peut-être faire en sorte que on puisse inverser l'ordre, donc faire du bas au haut
             items: [
                 { title: "My Profile", fontawesome_icon: "far fa-user", onclick: () => console.log("clicked on profile") },
                 { title: "Settings", fontawesome_icon: "fas fa-cog", onclick: () => console.log("clicked on settings") },
