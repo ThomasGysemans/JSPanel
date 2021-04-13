@@ -9,6 +9,7 @@
     --panel-separator-color: #dfe3eb;
 }
 
+/* the pannel */
 .jspanel {
     box-sizing: border-box;
     position: absolute;
@@ -19,13 +20,15 @@
     width: var(--panel-width, 160px);
     min-height: 50px;
     height: auto;
-    visibility: visible;
+    visibility: visible; /* important */
 }
 
+/* Never change the visibility of the sign by yourself. */
 .jspanel.panel-hidden {
     visibility: hidden;
 }
 
+/* the list of items */
 .jspanel ul {
     list-style-type: none;
     margin: 0;
@@ -36,6 +39,7 @@
     align-items: center;
 }
 
+/* for each item */
 .jspanel li {
     width: 100%;
     height: 30px;
@@ -52,6 +56,7 @@
     color: var(--panel-hover-item-color, #385074);
 }
 
+/* the title of the item */
 .jspanel li span {
     pointer-events: none;
     -webkit-user-select: none;
@@ -64,6 +69,7 @@
 	overflow: hidden;
 }
 
+/* img is an `icon`, i is a `fontawesome_icon` */
 .jspanel li img,
 .jspanel li i {
     pointer-events: none;
@@ -74,11 +80,13 @@
     margin-right: 10px;
 }
 
+/* the icon */
 .jspanel li img {
     width: var(--panel-icon-width, 13px);
     height: auto;
 }
 
+/* for each separator */
 .jspanel .jspanel-separator {
     height: 1px;
     width: 80%;

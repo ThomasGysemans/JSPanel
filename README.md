@@ -78,6 +78,25 @@ The items have also specific options:
 
 In order to use `fontawesome_icon`, make sure you've installed [Fontawesome](https://cdnjs.com/libraries/font-awesome) in your project.
 
+## Customize the panel
+
+You can change the style of the panel by modifying the CSS file. There are the main variables defined at the beginning of the file:
+
+```css
+:root {
+    --panel-background-color: #fff;
+    --panel-box-shadow: 0 0 4px rgba(204, 204, 204, 0.75);
+    --panel-width: 160px;
+    --panel-text-color: #404040;
+    --panel-hover-item-background-color: #f4f6fa;
+    --panel-hover-item-color: #385074;
+    --panel-icon-width: 13px;
+    --panel-separator-color: #dfe3eb;
+}
+```
+
+For further modifications, you'll need to modify the CSS properties. Be careful not to modify the file too much at the risk of compromising the proper functioning of the panel.
+
 ## Digital Accessibility
 
 Following the digital accessibility recommendations for this kind of panels, it is necessary to open or close the panel by clicking either the Enter or Space key. See <https://www.accede-web.com/en/guidelines/rich-interface-components/show-hide-panels/> for more information.
