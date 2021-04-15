@@ -235,13 +235,10 @@ class JSPanel {
             const li = this._createEl("li");
 
             if ((item.icon && !item.fontawesome_icon) || (item.icon && item.fontawesome_icon)) {
-                const icon = this._createEl("img");
-                icon.setAttribute("src", item.icon);
+                const icon = this._createEl("img", { attributes: [["src", item.icon]] });
                 li.appendChild(icon);
             } else if (!item.icon && item.fontawesome_icon) {
-                const icon = this._createEl("i");
-                const classes = item.fontawesome_icon.split(" ");
-                for (let clas of classes) icon.classList.add(clas);
+                const icon = this._createEl("i", { className: item.fontawesome_icon });
                 li.appendChild(icon);
             }
 
