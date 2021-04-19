@@ -70,7 +70,7 @@
                 { title: "My Profile", fontawesome_icon: "far fa-user", onclick: () => console.log("clicked on profile") },
                 { title: "Settings", fontawesome_icon: "fas fa-cog", onclick: () => console.log("clicked on settings") },
                 { separator: true, },
-                { title: "Close", fontawesome_icon: "far fa-window-close", onclick: () => console.log("clicked on close") },
+                { title: "Close", fontawesome_icon: "far fa-window-close", className: "js-modal", attributes: [["data-modal", "#truc"]], onclick: () => console.log("clicked on close") },
             ],
         });
     </script>

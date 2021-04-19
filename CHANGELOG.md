@@ -1,3 +1,15 @@
+## [1.0.2] - April 19, 2021
+
+New options for the items:
+
+* fontawesome_color
+* className
+* attributes
+
+## [1.0.1] - April 15, 2021
+
+Minor changes
+
 ## [1.0.0] - April 13, 2021
 
 Initial release

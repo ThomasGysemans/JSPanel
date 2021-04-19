@@ -6,7 +6,7 @@ class JSPanel {
     /**
      * @constructs JSPanel
      * @param {HTMLButtonElement} button The button which will display the panel.
-     * @param {{top?:number,right?:number,bottom?:number,left?:number,items:Array<{title:string,icon?:string,fontawesome_icon?:string,onclick?:Function,separator?:boolean}>}} options The options to customize the panel.
+     * @param {{top?:number,right?:number,bottom?:number,left?:number,items:Array<{title:string,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}>}} options The options to customize the panel.
      */
     constructor(button, options) {
         /**
@@ -171,7 +171,7 @@ class JSPanel {
     }
     /**
      * Builds an item.
-     * @param {{title:string,icon?:string,fontawesome_icon?:string,onclick?:Function,separator?:boolean}} item The item to build.
+     * @param {{title:string,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}} item The item to build.
      * @returns {HTMLElement} The item as an HTML element.
      * @private
      */
@@ -183,16 +183,27 @@ class JSPanel {
         else {
             const li = this._createEl("li");
             if ((item.icon && !item.fontawesome_icon) || (item.icon && item.fontawesome_icon)) {
-                const icon = this._createEl("img");
-                icon.setAttribute("src", item.icon);
+                const icon = this._createEl("img", { attributes: [["src", item.icon]] });
                 li.appendChild(icon);
             }
             else if (!item.icon && item.fontawesome_icon) {
-                const icon = this._createEl("i");
-                const classes = item.fontawesome_icon.split(" ");
-                for (let clas of classes)
-                    icon.classList.add(clas);
+                const icon = this._createEl("i", { className: item.fontawesome_icon });
+                if (item.fontawesome_color)
+                    icon.style.color = item.fontawesome_color;
                 li.appendChild(icon);
+            }
+            if (item.className) {
+                const classes = item.className.split(" ");
+                for (let clas of classes) {
+                    li.classList.add(clas);
+                }
+            }
+            if (item.attributes) {
+                for (let attr of item.attributes) {
+                    const name = attr[0];
+                    const value = attr[1];
+                    li.setAttribute(name, value);
+                }
             }
             if (item.title) {
                 const title = this._createEl("span", { textContent: item.title });

@@ -73,10 +73,13 @@ The items have also specific options:
 |`title`|string|(_required_)|The title of the item.|
 |`icon`|string|null|The path to an image.|
 |`fontawesome_icon`|string|null|The className of a Fontawesome icon.|
+|`fontawesome_color`|string|null|The color of the Fontawesome icon.|
+|`className`|string|null|Additional classes to be added to the item, separated by a white space.|
+|`attributes`|`[string, string][]`|null|Additional attributes to be added to the item. Exemple: `[["data-thing", "thing"], ...[]]`|
 |`onclick`|() => void|null|The callback function when the user clicks on the item.|
 |`separator`|boolean|false|Displays a line. This item cannot have any other options.|
 
-In order to use `fontawesome_icon`, make sure you've installed [Fontawesome](https://cdnjs.com/libraries/font-awesome) in your project.
+In order to use `fontawesome_icon` and `fontawesome_color`, make sure you've installed [Fontawesome](https://cdnjs.com/libraries/font-awesome) in your project.
 
 ## Customize the panel
 
