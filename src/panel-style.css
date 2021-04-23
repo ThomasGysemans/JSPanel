@@ -29,10 +29,8 @@
 }
 
 /* the list of items */
-.jspanel ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+.jspanel .container-items {
+    box-sizing: border-box;
     display:flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -40,7 +38,9 @@
 }
 
 /* for each item */
-.jspanel li {
+.jspanel button {
+    border: none;
+    cursor: pointer;
     width: 100%;
     height: 30px;
     box-sizing: border-box;
@@ -51,23 +51,23 @@
     align-items: center;
 }
 
-.jspanel li:hover {
+.jspanel button:hover {
     background-color: var(--panel-hover-item-background-color, #f4f6fa);
     color: var(--panel-hover-item-color, #385074);
 }
 
-.jspanel li:focus {
+.jspanel button:focus {
     outline: auto;
 }
 
 /* the title of the item */
-.jspanel li span {
+.jspanel button span {
     pointer-events: none;
     -webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-    display: block;
+    display: flex;
     width: 100%;
     text-overflow: ellipsis;
 	white-space: nowrap;
@@ -75,8 +75,8 @@
 }
 
 /* img is an `icon`, i is a `fontawesome_icon` */
-.jspanel li img,
-.jspanel li i {
+.jspanel button img,
+.jspanel button i {
     pointer-events: none;
     -webkit-user-select: none;
 	-moz-user-select: none;
@@ -86,7 +86,7 @@
 }
 
 /* the icon */
-.jspanel li img {
+.jspanel button img {
     width: var(--panel-icon-width, 13px);
     height: auto;
 }

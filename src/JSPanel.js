@@ -25,6 +25,7 @@ class JSPanel {
     }
     /**
      * Builds the panel.
+     * @private
      */
     _buildPanel() {
         const top = this.options.top === undefined ? null : this.options.top + "px";
@@ -54,12 +55,12 @@ class JSPanel {
         // items
         //
         if (this.options.items) {
-            const ul = document.createElement("ul");
+            const container = this._createEl("div", { className: "container-items" });
             for (let item of this.options.items) {
                 const built_item = this._buildItem(item);
-                ul.appendChild(built_item);
+                container.appendChild(built_item);
             }
-            this.panel.appendChild(ul);
+            this.panel.appendChild(container);
         }
         else {
             throw new Error("You need to define items to be displayed in the panel.");
@@ -70,7 +71,7 @@ class JSPanel {
         document.addEventListener("click", (e) => {
             const target = e.target;
             if (target && this.panel) {
-                if (!this.panel.contains(target) && this._isOpened()) {
+                if (!this.panel.contains(target) && this._isOpen()) {
                     this._closePanel();
                 }
             }
@@ -97,7 +98,7 @@ class JSPanel {
      * @returns {boolean} True if the panel is opened.
      * @private
      */
-    _isOpened() {
+    _isOpen() {
         if (this.panel) {
             return !this.panel.classList.contains("panel-hidden");
         }
@@ -113,17 +114,42 @@ class JSPanel {
     _togglePanel(e) {
         if (this.button && this.panel) {
             e.stopPropagation();
-            if (this._isOpened()) {
+            if (this._isOpen()) {
                 this._closePanel();
             }
             else {
                 this.button.setAttribute("aria-expanded", "true");
                 this.panel.classList.remove("panel-hidden");
-                // Digital accessibility
-                const all_items = this.panel.querySelectorAll("li");
+                const all_items = this._getAllItems();
                 if (all_items && all_items[0])
                     all_items[0].focus();
             }
+        }
+    }
+    /**
+     * Gets all the items from the panel if it's open.
+     * @returns {NodeListOf<HTMLButtonElement>|null} All the items.
+     */
+    _getAllItems() {
+        if (this._isOpen()) {
+            return this.panel.querySelectorAll("button");
+        }
+        else {
+            return null;
+        }
+    }
+    /**
+     * Gets all the active items from the panel if it's open.
+     * @returns {Array<Element>|null} All the items that have an onclick property.
+     */
+    _getAllActiveItems() {
+        if (this._isOpen()) {
+            const active_elements = Array.from(this.panel.querySelectorAll("button"));
+            active_elements.push(this.button);
+            return active_elements;
+        }
+        else {
+            return null;
         }
     }
     /**
@@ -185,41 +211,70 @@ class JSPanel {
             return div;
         }
         else {
-            const li = this._createEl("li");
-            li.setAttribute("tabindex", "0");
+            const button = this._createEl("button");
+            button.setAttribute("aria-label", item.title);
+            button.setAttribute("tabindex", "0");
             if ((item.icon && !item.fontawesome_icon) || (item.icon && item.fontawesome_icon)) {
                 const icon = this._createEl("img", { attributes: [["src", item.icon]] });
-                li.appendChild(icon);
+                button.appendChild(icon);
             }
             else if (!item.icon && item.fontawesome_icon) {
                 const icon = this._createEl("i", { className: item.fontawesome_icon });
                 if (item.fontawesome_color)
                     icon.style.color = item.fontawesome_color;
-                li.appendChild(icon);
+                button.appendChild(icon);
             }
             if (item.className) {
                 const classes = item.className.split(" ");
                 for (let clas of classes) {
-                    li.classList.add(clas);
+                    button.classList.add(clas);
                 }
             }
             if (item.attributes) {
                 for (let attr of item.attributes) {
                     const name = attr[0];
                     const value = attr[1];
-                    li.setAttribute(name, value);
+                    button.setAttribute(name, value);
                 }
             }
-            if (item.title) {
-                const title = this._createEl("span", { textContent: item.title });
-                li.appendChild(title);
-            }
-            li.addEventListener('click', () => {
+            const title = this._createEl("span", { textContent: item.title });
+            button.appendChild(title);
+            button.addEventListener('click', () => {
                 if (item.onclick)
                     item.onclick();
                 this._closePanel();
             });
-            return li;
+            button.addEventListener("keydown", (e) => {
+                if (e.key === "Tab" || e.keyCode === 9) {
+                    if (this._isOpen())
+                        this._focusInPanel(e);
+                }
+            });
+            return button;
+        }
+    }
+    /**
+     * Blocks the focus inside the panel while it's open.
+     * @param {KeyboardEvent} e The keyboard event.
+     */
+    _focusInPanel(e) {
+        const all_items = this._getAllActiveItems();
+        if (all_items) {
+            e.preventDefault();
+            let index = Array.from(all_items).findIndex(f => this.panel ? f === this.panel.querySelector(":focus") : false);
+            if (e.shiftKey === true) {
+                index--;
+            }
+            else {
+                index++;
+            }
+            if (index >= all_items.length) {
+                index = 0;
+            }
+            if (index < 0) {
+                index = all_items.length - 1;
+            }
+            all_items[index].focus();
         }
     }
     /**
