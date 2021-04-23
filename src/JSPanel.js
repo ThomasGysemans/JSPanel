@@ -119,6 +119,10 @@ class JSPanel {
             else {
                 this.button.setAttribute("aria-expanded", "true");
                 this.panel.classList.remove("panel-hidden");
+                // Digital accessibility
+                const all_items = this.panel.querySelectorAll("li");
+                if (all_items && all_items[0])
+                    all_items[0].focus();
             }
         }
     }
@@ -182,6 +186,7 @@ class JSPanel {
         }
         else {
             const li = this._createEl("li");
+            li.setAttribute("tabindex", "0");
             if ((item.icon && !item.fontawesome_icon) || (item.icon && item.fontawesome_icon)) {
                 const icon = this._createEl("img", { attributes: [["src", item.icon]] });
                 li.appendChild(icon);

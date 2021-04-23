@@ -1,3 +1,7 @@
+## [1.1.0] - April 23, 2021
+
+Better digital accessibility.
+
 ## [1.0.2] - April 19, 2021
 
 New options for the items:

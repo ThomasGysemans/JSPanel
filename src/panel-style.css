@@ -56,6 +56,10 @@
     color: var(--panel-hover-item-color, #385074);
 }
 
+.jspanel li:focus {
+    outline: auto;
+}
+
 /* the title of the item */
 .jspanel li span {
     pointer-events: none;
