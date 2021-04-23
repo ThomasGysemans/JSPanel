@@ -300,7 +300,7 @@ class JSPanel {
                 this._closePanel();
             });
 
-            button.addEventListener("keydown", (e: KeyboardEvent) => {
+            window.addEventListener("keydown", (e: KeyboardEvent) => {
                 if (e.key === "Tab" || e.keyCode === 9) {
                     if (this._isOpen()) this._focusInPanel(e);
                 }
