@@ -1,3 +1,7 @@
+## [1.0.1] - April 23, 2021
+
+Bug fixes
+
 ## [1.1.0] - April 23, 2021
 
 Better digital accessibility.

@@ -267,7 +267,6 @@ class JSPanel {
         } else {
             const button = this._createEl("button");
             button.setAttribute("aria-label", item.title);
-            button.setAttribute("tabindex", "0");
 
             if ((item.icon && !item.fontawesome_icon) || (item.icon && item.fontawesome_icon)) {
                 const icon = this._createEl("img", { attributes: [["src", item.icon]] });
