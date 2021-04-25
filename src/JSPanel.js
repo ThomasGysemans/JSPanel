@@ -76,9 +76,35 @@ class JSPanel {
                 }
             }
         });
-        this.button.addEventListener("click", (e) => this._togglePanel(e));
-        this.button.addEventListener("keydown", (e) => this._toggleOnKeyboardEvent(e));
+        this.button.onclick = (e) => { this._togglePanel(e); };
+        this.button.onkeydown = (e) => { this._toggleOnKeyboardEvent(e); };
         this._insertAfterButton(this.panel);
+        this.panel.onkeydown = (e) => {
+            if (e.key === "Tab" || e.keyCode === 9) {
+                if (this._isOpen())
+                    this._focusInPanel(e);
+            }
+        };
+        // I absolutly want the focus to stay inside (and only INSIDE) the panel :)
+        // For that, I need to add a keydown event to the button too because
+        // I want to include it during the keyboard navigation (with Tab)
+        // So that it's easier for the user to close the panel with his/her keyboard.
+        this.button.onkeydown = (e) => {
+            if (e.key === "Tab" || e.keyCode === 9) {
+                if (this._isOpen()) {
+                    e.preventDefault();
+                    const active_elements = this._getAllActiveItems();
+                    if (active_elements && active_elements[0]) {
+                        if (e.shiftKey === true) {
+                            active_elements[active_elements.length - 2].focus(); // -2 because we don't want to take into account the button once again
+                        }
+                        else {
+                            active_elements[0].focus();
+                        }
+                    }
+                }
+            }
+        };
     }
     /**
      * Following the digital accessibility recommendations for this kind of panels,
@@ -140,7 +166,7 @@ class JSPanel {
     }
     /**
      * Gets all the active items from the panel if it's open.
-     * @returns {Array<Element>|null} All the items that have an onclick property.
+     * @returns {Array<HTMLElement>|null} All the items that have an onclick property.
      */
     _getAllActiveItems() {
         if (this._isOpen()) {
@@ -213,7 +239,6 @@ class JSPanel {
         else {
             const button = this._createEl("button");
             button.setAttribute("aria-label", item.title);
-            button.setAttribute("tabindex", "0");
             if ((item.icon && !item.fontawesome_icon) || (item.icon && item.fontawesome_icon)) {
                 const icon = this._createEl("img", { attributes: [["src", item.icon]] });
                 button.appendChild(icon);
@@ -243,12 +268,6 @@ class JSPanel {
                 if (item.onclick)
                     item.onclick();
                 this._closePanel();
-            });
-            button.addEventListener("keydown", (e) => {
-                if (e.key === "Tab" || e.keyCode === 9) {
-                    if (this._isOpen())
-                        this._focusInPanel(e);
-                }
             });
             return button;
         }

@@ -124,10 +124,38 @@ class JSPanel {
                 }
             }
         });
-        this.button.addEventListener("click", (e) => this._togglePanel(e));
-        this.button.addEventListener("keydown", (e) => this._toggleOnKeyboardEvent(e));
+
+        this.button.onclick = (e) => { this._togglePanel(e) };
+        this.button.onkeydown = (e) => { this._toggleOnKeyboardEvent(e) };
 
         this._insertAfterButton(this.panel);
+
+        this.panel.onkeydown = (e: KeyboardEvent) => {
+            if (e.key === "Tab" || e.keyCode === 9) {
+                if (this._isOpen()) this._focusInPanel(e);
+            }
+        };
+
+        // I absolutly want the focus to stay inside (and only INSIDE) the panel :)
+        // For that, I need to add a keydown event to the button too because
+        // I want to include it during the keyboard navigation (with Tab)
+        // So that it's easier for the user to close the panel with his/her keyboard.
+        this.button.onkeydown = (e: KeyboardEvent) => {
+            if (e.key === "Tab" || e.keyCode === 9) {
+                if (this._isOpen()) {
+                    e.preventDefault();
+
+                    const active_elements = this._getAllActiveItems();
+                    if (active_elements && active_elements[0]) {
+                        if (e.shiftKey === true) {
+                            active_elements[active_elements.length - 2].focus(); // -2 because we don't want to take into account the button once again
+                        } else {
+                            active_elements[0].focus();
+                        }
+                    }
+                }
+            }
+        };
     }
 
     /**
@@ -192,9 +220,9 @@ class JSPanel {
 
     /**
      * Gets all the active items from the panel if it's open.
-     * @returns {Array<Element>|null} All the items that have an onclick property.
+     * @returns {Array<HTMLElement>|null} All the items that have an onclick property.
      */
-    private _getAllActiveItems(): Element[] | null {
+    private _getAllActiveItems(): HTMLElement[] | null {
         if (this._isOpen()) {
             const active_elements: HTMLElement[] = Array.from((this.panel as HTMLElement).querySelectorAll("button"));
             active_elements.push(this.button as HTMLElement);
@@ -300,12 +328,6 @@ class JSPanel {
                 this._closePanel();
             });
 
-            window.addEventListener("keydown", (e: KeyboardEvent) => {
-                if (e.key === "Tab" || e.keyCode === 9) {
-                    if (this._isOpen()) this._focusInPanel(e);
-                }
-            });
-
             return button;
         }
     }
@@ -330,7 +352,7 @@ class JSPanel {
             if(index < 0) {
                 index = all_items.length - 1;
             }
-            (all_items[index] as HTMLElement).focus();
+            all_items[index].focus();
         }
     }
 

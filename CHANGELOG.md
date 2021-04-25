@@ -1,3 +1,7 @@
+## [1.1.2] - April 25, 2021
+
+Bug fixes
+
 ## [1.1.1] - April 23, 2021
 
 Bug fixes
