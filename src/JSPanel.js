@@ -57,15 +57,17 @@ class JSPanel {
         if (this.options.items) {
             const container = this._createEl("div", { className: "container-items" });
             for (let item of this.options.items) {
-                const built_item = this._buildItem(item);
-                container.appendChild(built_item);
+                if (item) {
+                    const built_item = this._buildItem(item);
+                    container.appendChild(built_item);
+                }
             }
             this.panel.appendChild(container);
         }
         else {
             throw new Error("You need to define items to be displayed in the panel.");
         }
-        // 
+        //
         // events
         //
         document.addEventListener("click", (e) => {
