@@ -1,3 +1,21 @@
+## [1.2.0] - April 28, 2021
+
+New methods:
+
++ toggleItem
++ removeItem
++ removeItems
++ getAllIDS
++ getItem
++ addItem
++ replaceItemWith
++ deletePanel
++ isOpen
+
+New option:
+
++ id
+
 ## [1.1.3] - April 28, 2021
 
 Bug fixes

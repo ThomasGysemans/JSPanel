@@ -71,6 +71,7 @@ The items have also specific options:
 |name|type|default value|description|
 |----|----|-------------|-----------|
 |`title`|string|(_required_)|The title of the item.|
+|`id`|positive number|from 0, incrementing|The id of the item. Used to recognize items via some methods like `removeItem()` etc.|
 |`icon`|string|null|The path to an image.|
 |`fontawesome_icon`|string|null|The className of a Fontawesome icon.|
 |`fontawesome_color`|string|null|The color of the Fontawesome icon.|
@@ -80,6 +81,26 @@ The items have also specific options:
 |`separator`|boolean|false|Displays a line. This item cannot have any other options.|
 
 In order to use `fontawesome_icon` and `fontawesome_color`, make sure you've installed [Fontawesome](https://cdnjs.com/libraries/font-awesome) in your project.
+
+## Make the panel dynamic
+
+Use the following methods to modify the content of the panel after its creation:
+
+* `toggleItem(id:number, disable=false)`: set disable to true if you want to disable the items. Set disable to false if you just want the item to disappear (display:none). Select the item with its ID (by default the first item has an ID of 0, then 1 etc.).
+
+* `removeItem(id:number)`: removes an item.
+
+* `removeItems(ids:number[])`: removes several items.
+
+* `getAllIDS()`: gets the id of each item.
+
+* `getItem(id:number)`: gets an item according to its ID.
+
+* `addItem(item)`: adds a new item.
+
+* `replaceItemWith(item, id:number)`: selects an item with its ID and replaces it by the new one.
+
+* `deletePanel()`: deletes the panel.
 
 ## Customize the panel
 

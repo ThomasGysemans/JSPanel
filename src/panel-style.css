@@ -51,6 +51,11 @@
     align-items: center;
 }
 
+.jspanel button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .jspanel button:hover {
     background-color: var(--panel-hover-item-background-color, #f4f6fa);
     color: var(--panel-hover-item-color, #385074);

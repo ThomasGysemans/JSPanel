@@ -8,6 +8,8 @@ interface PanelOptions {
 
 interface PanelItem {
     title: string;
+    /** @since 1.2.0 */
+    id: number;
     icon?: string;
     fontawesome_icon?: string;
     fontawesome_color?: string;
@@ -46,7 +48,7 @@ class JSPanel {
 
     /**
      * The options to customize the panel.
-     * @type {{top?:number,right?:number,bottom?:number,left?:number,items:Array<{title:string,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}>}}
+     * @type {{top?:number,right?:number,bottom?:number,left?:number,items:Array<{title:string,id?:number,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}>}}
      * @private
      */
     private options: PanelOptions;
@@ -61,7 +63,7 @@ class JSPanel {
     /**
      * @constructs JSPanel
      * @param {HTMLButtonElement} button The button which will display the panel.
-     * @param {{top?:number,right?:number,bottom?:number,left?:number,items:Array<{title:string,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}>}} options The options to customize the panel.
+     * @param {{top?:number,right?:number,bottom?:number,left?:number,items:Array<{title:string,id?:number,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}>}} options The options to customize the panel.
      */
     public constructor(button: HTMLButtonElement, options: PanelOptions) {
         this.button = button;
@@ -103,8 +105,10 @@ class JSPanel {
 
         if (this.options.items) {
             const container = this._createEl("div", { className: "container-items" });
-            for (let item of this.options.items) {
+            for (let i = 0; i < this.options.items.length; i++) {
+                const item = this.options.items[i];
                 if (item) {
+                    if (!item.id) item.id = i;
                     const built_item = this._buildItem(item);
                     container.appendChild(built_item);
                 }
@@ -121,7 +125,7 @@ class JSPanel {
         document.addEventListener("click", (e) => {
             const target = e.target as HTMLElement;
             if (target && this.panel) {
-                if (!this.panel.contains(target) && this._isOpen()) {
+                if (!this.panel.contains(target) && this.isOpen()) {
                     this._closePanel();
                 }
             }
@@ -134,7 +138,7 @@ class JSPanel {
 
         this.panel.onkeydown = (e: KeyboardEvent) => {
             if (e.key === "Tab" || e.keyCode === 9) {
-                if (this._isOpen()) this._focusInPanel(e);
+                if (this.isOpen()) this._focusInPanel(e);
             }
         };
 
@@ -144,7 +148,7 @@ class JSPanel {
         // So that it's easier for the user to close the panel with his/her keyboard.
         this.button.onkeydown = (e: KeyboardEvent) => {
             if (e.key === "Tab" || e.keyCode === 9) {
-                if (this._isOpen()) {
+                if (this.isOpen()) {
                     e.preventDefault();
 
                     const active_elements = this._getAllActiveItems();
@@ -177,9 +181,9 @@ class JSPanel {
     /**
      * Checks if the panel is currently opened or not.
      * @returns {boolean} True if the panel is opened.
-     * @private
+     * @public
      */
-    private _isOpen(): boolean {
+    public isOpen(): boolean {
         if (this.panel) {
             return !this.panel.classList.contains("panel-hidden");
         } else {
@@ -196,7 +200,7 @@ class JSPanel {
         if (this.button && this.panel) {
             e.stopPropagation();
 
-            if (this._isOpen()) {
+            if (this.isOpen()) {
                 this._closePanel();
             } else {
                 this.button.setAttribute("aria-expanded", "true");
@@ -211,9 +215,10 @@ class JSPanel {
     /**
      * Gets all the items from the panel if it's open.
      * @returns {NodeListOf<HTMLButtonElement>|null} All the items.
+     * @private
      */
     private _getAllItems(): NodeListOf<HTMLButtonElement> | null {
-        if (this._isOpen()) {
+        if (this.isOpen()) {
             return (this.panel as HTMLElement).querySelectorAll("button");
         } else {
             return null;
@@ -223,12 +228,13 @@ class JSPanel {
     /**
      * Gets all the active items from the panel if it's open.
      * @returns {Array<HTMLElement>|null} All the items that have an onclick property.
+     * @private
      */
     private _getAllActiveItems(): HTMLElement[] | null {
-        if (this._isOpen()) {
+        if (this.isOpen()) {
             const active_elements: HTMLElement[] = Array.from((this.panel as HTMLElement).querySelectorAll("button"));
             active_elements.push(this.button as HTMLElement);
-            return active_elements;
+            return active_elements.filter((e) => e.style.display !== "none" && !e.hasAttribute("disabled"));
         } else {
             return null;
         }
@@ -286,16 +292,19 @@ class JSPanel {
 
     /**
      * Builds an item.
-     * @param {{title:string,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}} item The item to build.
+     * @param {{title:string,id?:number,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}} item The item to build.
      * @returns {HTMLElement} The item as an HTML element.
      * @private
      */
     private _buildItem(item: PanelItem): HTMLElement {
+        const id = (item.id as number).toString();
+        
         if (item.separator) {
-            const div = this._createEl("div", { className: 'jspanel-separator' });
+            const div = this._createEl("div", { className: 'jspanel-separator', attributes: [["data-id", id]] });
             return div;
         } else {
             const button = this._createEl("button");
+            button.setAttribute("data-id", id);
             button.setAttribute("aria-label", item.title);
 
             if ((item.icon && !item.fontawesome_icon) || (item.icon && item.fontawesome_icon)) {
@@ -337,6 +346,7 @@ class JSPanel {
     /**
      * Blocks the focus inside the panel while it's open.
      * @param {KeyboardEvent} e The keyboard event.
+     * @private
      */
     private _focusInPanel(e: KeyboardEvent): void {
         const all_items = this._getAllActiveItems();
@@ -399,5 +409,152 @@ class JSPanel {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    /**
+     * Toggles an item.
+     * @param {number} id The id of the item.
+     * @param {boolean} disable If the item is a button (not a separator), then, instead of display:none, we disable it. By default: false.
+     * @public
+     * @since 1.2.0
+     */
+    public toggleItem(id: number, disable: boolean = false): void {
+        if (this.panel) {
+            const items = Array.from(this.panel.querySelectorAll("[data-id='" + id + "']")) as HTMLElement[];
+            if (disable) {
+                if (items) for (let item of items) {
+                    if (item.tagName.toLowerCase() === "button") {
+                        item.hasAttribute("disabled") ? item.removeAttribute("disabled") : item.setAttribute("disabled", "disabled");
+                    } else {
+                        if (items) for (let item of items) (item.style.display as any) = item.style.display == "none" ? null : "none";
+                    }
+                }
+            }  else {
+                if (items) for (let item of items) (item.style.display as any) = item.style.display == "none" ? null : "none";
+            }
+        }
+    }
+
+    /**
+     * Removes an item.
+     * @param {number} id The id of the item to remove.
+     * @public
+     * @since 1.2.0
+     */
+    public removeItem(id: number): void {
+        if (this.panel) {
+            const item = this.getItem(id);
+            if (item && item.parentElement) {
+                item.parentElement.removeChild(item);
+            }
+        }
+    }
+
+    /**
+     * Removes several items.
+     * @param {Array<number>} ids The ids of the items.
+     * @public
+     * @since 1.2.0
+     */
+    public removeItems(ids: number[]): void {
+        if (this.panel) {
+            for (let id of ids) {
+                this.removeItem(id);
+            }
+        }
+    }
+
+    /**
+     * Gets the id of each item.
+     * @returns {Array<number>} The list of ids.
+     * @public
+     * @since 1.2.0
+     */
+    public getAllIDS(): number[] {
+        if (this.panel) {
+            const all_items = Array.from(this.panel.querySelectorAll("[data-id]"));
+            const all_ids: number[] = [];
+            if (all_items) {
+                for (let item of all_items) {
+                    all_ids.push(parseInt(item.getAttribute("data-id") as string));
+                }
+
+                return all_ids;
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Gets an item.
+     * @param id The id of the item.
+     * @returns {HTMLElement|null} The item.
+     * @public
+     * @since 1.2.0
+     */
+    public getItem(id: number): HTMLElement | null {
+        if (this.panel) {
+            return this.panel.querySelector("[data-id='" + id + "']");
+        }
+
+        return null;
+    }
+
+    /**
+     * Builds a new item to be added to the panel after its creation.
+     * @param {{title:string,id?:number,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}} new_item The new item to be built.
+     * @param default_new_id The ID of the item, just in case the user did not specify any.
+     * @returns The HTML element of an item.
+     * @private
+     * @since 1.2.0
+     */
+    private _buildNewItem(new_item: PanelItem, default_new_id: number): HTMLElement {
+        if (!new_item.id && (default_new_id === null || default_new_id === undefined)) throw new Error("An item must have an ID.");
+        if (!new_item.id) new_item.id = default_new_id;
+        const build_item = this._buildItem(new_item);
+        return build_item;
+    }
+
+    /**
+     * Adds an item
+     * @param {{title:string,id?:number,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}} new_item The new item to be built.
+     * @public
+     * @since 1.2.0
+     */
+    public addItem(new_item: PanelItem): void {
+        if (this.panel) {
+            this.panel.appendChild(this._buildNewItem(new_item, Math.max(...this.getAllIDS())));
+        }
+    }
+
+    /**
+     * Replaces an item by another one.
+     * @param {{title:string,id?:number,icon?:string,fontawesome_icon?:string,fontawesome_color?:string,className?:string,attributes?:Array<Array<string>>,onclick?:Function,separator?:boolean}} new_item The new item.
+     * @param {number} id The id of the item to be replaced.
+     * @public
+     * @since 1.2.0
+     */
+    public replaceItemWith(new_item: PanelItem, id: number): void {
+        if (this.panel) {
+            const current_item = this.getItem(id);
+            if (current_item) {
+                const new_built_item = this._buildNewItem(new_item, parseInt(current_item.getAttribute("data-id") as string));
+                current_item.replaceWith(new_built_item);
+            }
+        }
+    }
+
+    /**
+     * Deletes the panel.
+     * @public
+     * @since 1.2.0
+     */
+    public deletePanel(): void {
+        if (this.panel && this.panel.parentElement) {
+            this.panel.parentElement.removeChild(this.panel);
+            this._closePanel();
+            this.panel = null;
+        }
     }
 }
