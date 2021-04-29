@@ -1,4 +1,5 @@
 :root {
+    --panel-z-index: 1001;
     --panel-background-color: #fff;
     --panel-box-shadow: 0 0 4px rgba(204, 204, 204, 0.75);
     --panel-width: 160px;
@@ -13,6 +14,7 @@
 .jspanel {
     box-sizing: border-box;
     position: absolute;
+    z-index: var(--panel-z-index, 1001);
     background-color: var(--panel-background-color, #fff);
     box-shadow: var(--panel-box-shadow, 0 0 4px rgba(204, 204, 204, 0.75));
     border-radius: 5px;

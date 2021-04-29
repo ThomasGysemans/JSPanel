@@ -1,3 +1,7 @@
+## [1.2.1] - April 29, 2021
+
++ z-index CSS property
+
 ## [1.2.0] - April 28, 2021
 
 New methods:
